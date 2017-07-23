@@ -180,6 +180,9 @@ ifeq ($(PLATFORM),PLATFORM_DESKTOP)
         # OpenAL Soft
         LFLAGS += -L$(RAYLIB_PATH)/src/external/openal_soft/lib/$(LIBPATH)
     endif
+    ifeq ($(PLATFORM_OS),OSX)
+        LFLAGS += -L/usr/local/Cellar/glfw/3.2.1/lib
+    endif
 endif
 
 # define any libraries to link into executable
