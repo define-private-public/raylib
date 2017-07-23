@@ -19,14 +19,31 @@ file(GLOB sources *.c)
 # Build a static or shared raylib?
 if(${SHARED_RAYLIB})
   add_library(raylib SHARED ${sources}) 
+
+  # On OS X for shared libs we need the -framework
+  if(APPLE)
+    find_library(OPENGL_LIBRARY OpenGL)
+    find_library(OPENAL_LIBRARY OpenAL)
+    find_library(COCOA_LIBRARY Cocoa)
+    set(OSX_FRAMEWORKS ${OPENGL_LIBRARY} ${OPENAL_LIBRARY} ${COCOA_LIBRARY})
+  endif(APPLE)
 else(${SHARED_RAYLIB})
   add_library(raylib STATIC ${sources}) 
-endif(${SHARED_RAYLIB})
+endif(${SHARED_RAYLIB}) 
 
 #target_include_directories(raylib ${OPENGL_INCLUDE_DIR})
 #target_link_libraries(raylib ${OPENGL_gl_LIBRARY})
-target_link_libraries(raylib openal)
+# Add in GLFW
 target_link_libraries(raylib glfw)
+
+# OpenAL is a little platform dependant
+if(APPLE)
+  # OS X, we use multiple frameworks
+  target_link_libraries(raylib ${OSX_FRAMEWORKS})
+else(APPlE)
+  # Elsewhere (such as Linux), only need a `-lopenal`
+  target_link_libraries(raylib openal)
+endif(APPLE)
 
 # Library file & Header
 set_target_properties(raylib PROPERTIES PUBLIC_HEADER "raylib.h")
