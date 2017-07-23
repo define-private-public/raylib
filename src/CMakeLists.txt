@@ -43,8 +43,9 @@ if(APPLE)
   # OS X, we use multiple frameworks
   target_link_libraries(raylib ${OSX_FRAMEWORKS})
 else(APPlE)
-  # Elsewhere (such as Linux), only need a `-lopenal`
+  # Elsewhere (such as Linux), need`-lopenal -lGL`
   target_link_libraries(raylib openal)
+  target_link_libraries(raylib GL)
 endif(APPLE)
 
 # Library file & Header
