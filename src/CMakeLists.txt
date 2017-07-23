@@ -53,3 +53,5 @@ install(
   PUBLIC_HEADER DESTINATION include
 )
 
+# Copy the header file to the build directory
+file(COPY "raylib.h" DESTINATION ".")
