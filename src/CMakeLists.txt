@@ -62,5 +62,8 @@ install(
   PUBLIC_HEADER DESTINATION include
 )
 
-# Copy the header file to the build directory
+# Copy the header files to the build directory
 file(COPY "raylib.h" DESTINATION ".")
+file(COPY "physac.h" DESTINATION ".")
+file(COPY "raymath.h" DESTINATION ".")
+file(COPY "audio.h" DESTINATION ".")
