@@ -8,7 +8,9 @@ set(raylib_VERSION_MAJOR 1)
 set(raylib_VERSION_MINOR 8)
 set(SHARED_RAYLIB OFF CACHE BOOL "Build raylib as a dynamic library")  
 
-file(GLOB sources *.c)
+file(GLOB raylib_sources *.c)
+file(GLOB stb_vorbis external/stb_vorbis.c)
+set(sources ${raylib_sources} ${stb_vorbis})
 
 #include_directories(external)
 ##include_directories(external/glfw3/include)
