@@ -9,7 +9,7 @@ set(SHARED_RAYLIB OFF CACHE BOOL "Build raylib as a dynamic library")
 # Need GLFW 3.2.1
 find_package(glfw3 3.2.1 REQUIRED)
 
-# Get the sources togheter
+# Get the sources together
 file(GLOB raylib_sources *.c)
 file(GLOB stb_vorbis external/stb_vorbis.c)
 set(sources ${raylib_sources} ${stb_vorbis})
