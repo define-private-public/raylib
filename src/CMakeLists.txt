@@ -1,5 +1,10 @@
 cmake_minimum_required(VERSION 3.0)
 
+# Detect linux
+if(UNIX AND NOT APPLE)
+  set(LINUX TRUE)
+endif()
+
 # Setup the project and settings
 project(raylib)
 set(raylib_VERSION_MAJOR 1)
@@ -25,24 +30,28 @@ if(${SHARED_RAYLIB})
     find_library(OPENAL_LIBRARY OpenAL)
     find_library(COCOA_LIBRARY Cocoa)
     set(OSX_FRAMEWORKS ${OPENGL_LIBRARY} ${OPENAL_LIBRARY} ${COCOA_LIBRARY})
+    target_link_libraries(raylib ${OSX_FRAMEWORKS})
   endif()
 else()
   # Static library
   add_library(raylib STATIC ${sources}) 
+
+  if(LINUX)
+    # On Linux, need to link a few extra things
+    target_link_libraries(raylib m pthread dl)
+    target_link_libraries(raylib X11 Xrandr Xinerama Xi Xxf86vm Xcursor) #X11 stuff
+  endif()
 endif()
 
-# Add in GLFW as a linking target
-target_link_libraries(raylib glfw)
-
-# OpenAL is a little platform dependant
-if(APPLE)
-  # OS X, we use multiple frameworks
-  target_link_libraries(raylib ${OSX_FRAMEWORKS})
-else()
+# Some libraries are platform dependant
+if(LINUX)
   # Elsewhere (such as Linux), need`-lopenal -lGL`
   target_link_libraries(raylib openal)
   target_link_libraries(raylib GL)
 endif()
+
+# Add in GLFW as a linking target
+target_link_libraries(raylib glfw)
 
 # Library file & Header
 set_target_properties(raylib PROPERTIES PUBLIC_HEADER "raylib.h")
