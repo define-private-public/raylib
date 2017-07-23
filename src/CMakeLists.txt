@@ -16,6 +16,7 @@ set(sources ${raylib_sources} ${stb_vorbis})
 
 # Build a static or shared raylib?
 if(${SHARED_RAYLIB})
+  # Shared library
   add_library(raylib SHARED ${sources}) 
 
   # On OS X for shared libs we need the -framework when doing .dylib stuff
@@ -24,10 +25,11 @@ if(${SHARED_RAYLIB})
     find_library(OPENAL_LIBRARY OpenAL)
     find_library(COCOA_LIBRARY Cocoa)
     set(OSX_FRAMEWORKS ${OPENGL_LIBRARY} ${OPENAL_LIBRARY} ${COCOA_LIBRARY})
-  endif(APPLE)
-else(${SHARED_RAYLIB})
+  endif()
+else()
+  # Static library
   add_library(raylib STATIC ${sources}) 
-endif(${SHARED_RAYLIB}) 
+endif()
 
 # Add in GLFW as a linking target
 target_link_libraries(raylib glfw)
@@ -36,11 +38,11 @@ target_link_libraries(raylib glfw)
 if(APPLE)
   # OS X, we use multiple frameworks
   target_link_libraries(raylib ${OSX_FRAMEWORKS})
-else(APPlE)
+else()
   # Elsewhere (such as Linux), need`-lopenal -lGL`
   target_link_libraries(raylib openal)
   target_link_libraries(raylib GL)
-endif(APPLE)
+endif()
 
 # Library file & Header
 set_target_properties(raylib PROPERTIES PUBLIC_HEADER "raylib.h")
