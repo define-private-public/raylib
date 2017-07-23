@@ -3,12 +3,15 @@ project(raylib)
 
 set(raylib_VERSION_MAJOR 1)
 set(raylib_VERSION_MINOR 8)
-set(SHARED_RAYLIB OFF)  
+set(SHARED_RAYLIB OFF CACHE BOOL "Build raylib as a dynamic library")  
 
 file(GLOB sources *.c)
 
-# TODO replace with the GLFW3 cmake files
+include_directories(external)
 include_directories(external/glfw3/include)
+
+# TODO replace with the GLFW3 cmake files
+find_package(glfw3 3.2.1)
 
 # Build a static or shared raylib?
 if(${SHARED_RAYLIB})
