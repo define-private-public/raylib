@@ -7,6 +7,9 @@ set(SHARED_RAYLIB OFF)
 
 file(GLOB sources *.c)
 
+# TODO replace with the GLFW3 cmake files
+include_directories(external/glfw3/include)
+
 # Build a static or shared raylib?
 if(${SHARED_RAYLIB})
   set(library_type SHARED)
