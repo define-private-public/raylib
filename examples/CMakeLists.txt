@@ -16,17 +16,30 @@ find_package(glfw3 3.2.1 REQUIRED)
 include_directories("../build/release")
 
 # Get the sources together
-file(GLOB_RECURSE example_sources
-  audio/*.c
-  core/*.c
-  models/*.c
-  others/*.c
-  physac/*.c
-  shaders/*.c
-  shapes/*.c
-  text/*.c
-  textures/*.c
-)
+set(example_dirs audio core models others physac shaders text texutures)
+set(example_sources)
+set(example_resources)
+foreach(example_dir ${example_dirs})
+  # Get the .c files
+  file(GLOB sources ${example_dir}/*.c)
+  list(APPEND example_sources ${sources})
+
+  # Any any resources
+  file(GLOB resources ${example_dir}/resources/*)
+  list(APPEND example_resources ${resources})
+endforeach()
+
+#file(GLOB example_sources
+#  audio/*.c
+#  core/*.c
+#  models/*.c
+#  others/*.c
+#  physac/*.c
+#  shaders/*.c
+#  shapes/*.c
+#  text/*.c
+#  textures/*.c
+#)
 
 # On OS X for shared libs we need the -framework when doing .dylib stuff
 if(APPLE)
@@ -67,4 +80,5 @@ foreach(example_source ${example_sources})
   target_link_libraries(${example_name} raylib)
 endforeach()
 
-
+# Copy all of the resource files to the destination
+file(COPY ${example_resources} DESTINATION "resources/")
