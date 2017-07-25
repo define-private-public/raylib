@@ -144,8 +144,9 @@ compile_commands.json
 CTestTestfile.cmake
 build
 
-# Unignore examples Makefile
+# Unignore These makefiles...
 !examples/CMakeLists.txt
+!games/CMakeLists.txt
 
 # binaries made from raylib
 libraylib.a

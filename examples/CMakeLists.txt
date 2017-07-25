@@ -11,7 +11,7 @@ project(examples)
 # Need GLFW 3.2.1
 find_package(glfw3 3.2.1 REQUIRED)
 
-# Make sure raylib has been build
+# Make sure raylib has been built
 # TODO `build` directory should maybe be somethign else...
 include_directories("../build/release")
 
@@ -28,18 +28,6 @@ foreach(example_dir ${example_dirs})
   file(GLOB resources ${example_dir}/resources/*)
   list(APPEND example_resources ${resources})
 endforeach()
-
-#file(GLOB example_sources
-#  audio/*.c
-#  core/*.c
-#  models/*.c
-#  others/*.c
-#  physac/*.c
-#  shaders/*.c
-#  shapes/*.c
-#  text/*.c
-#  textures/*.c
-#)
 
 # On OS X for shared libs we need the -framework when doing .dylib stuff
 if(APPLE)
