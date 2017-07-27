@@ -1,5 +1,5 @@
 # Setup the project and settings
-project(drturtle)
+project(koala_seasons)
 
 include("../../utils.cmake")
 
@@ -8,9 +8,12 @@ include("../../utils.cmake")
 # TODO `build` directory should maybe be something else...
 include_directories("../../build/release")
 
+# Grab the screens
+file(GLOB screen_sources "screens/*.c")
+
 # Executable & linking
-add_executable(drturtle 06_drturtle_final.c)
-link_libraries_to_executable(drturtle)
+add_executable(koala_seasons koala_seasons.c ${screen_sources})
+link_libraries_to_executable(koala_seasons)
 
 # Resources
 # Copy all of the resource files to the destination
