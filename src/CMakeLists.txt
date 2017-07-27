@@ -1,14 +1,12 @@
 # Setup the project and settings
 project(raylib)
+include("../utils.cmake")
+
 set(raylib_VERSION_MAJOR 1)
 set(raylib_VERSION_MINOR 8)
-include("../utils.cmake")
 
 # Config options
 set(SHARED_RAYLIB OFF CACHE BOOL "Build raylib as a dynamic library")  
-
-# Need GLFW 3.2.1
-find_package(glfw3 3.2.1 REQUIRED)
 
 # Get the sources together
 file(GLOB raylib_sources *.c)
