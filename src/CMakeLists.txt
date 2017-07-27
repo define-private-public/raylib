@@ -52,6 +52,7 @@ install(
 
 # Copy the header files to the build directory
 file(COPY "raylib.h" DESTINATION ".")
+file(COPY "rlgl.h" DESTINATION ".")
 file(COPY "physac.h" DESTINATION ".")
 file(COPY "raymath.h" DESTINATION ".")
 file(COPY "audio.h" DESTINATION ".")

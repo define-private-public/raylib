@@ -26,3 +26,4 @@ endforeach()
 
 # Do the games with subdirectories
 add_subdirectory(just_do)
+add_subdirectory(drturtle)
