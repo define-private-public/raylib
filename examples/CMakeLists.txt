@@ -3,6 +3,11 @@ project(examples)
 
 include("../utils.cmake")
 
+# Make sure raylib has been built
+# TODO `build` directory should maybe be something else...
+# TODO place somewhere else?
+include_directories("../build/release")
+
 # Get the sources together
 set(example_dirs audio core models others physac shaders text texutures)
 set(example_sources)

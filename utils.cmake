@@ -9,11 +9,6 @@ endif()
 # Need GLFW 3.2.1
 find_package(glfw3 3.2.1 REQUIRED)
 
-# Make sure raylib has been built
-# TODO `build` directory should maybe be something else...
-# TODO place somewhere else?
-include_directories("build/release")
-
 
 # Linking for OS X -framework options
 # Will do nothing on other OSes
