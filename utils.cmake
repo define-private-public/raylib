@@ -10,19 +10,31 @@ endif()
 find_package(glfw3 3.2.1 REQUIRED)
 
 # Make sure raylib has been built
-# TODO `build` directory should maybe be somethign else...
+# TODO `build` directory should maybe be something else...
+# TODO place somewhere else?
 include_directories("build/release")
+
+
+# Linking for OS X -framework options
+# Will do nothing on other OSes
+function(link_os_x_frameworks binary)
+  if(APPLE)
+    find_library(OPENGL_LIBRARY OpenGL)
+    find_library(OPENAL_LIBRARY OpenAL)
+    find_library(COCOA_LIBRARY Cocoa)
+
+    set(OSX_FRAMEWORKS ${OPENGL_LIBRARY} ${OPENAL_LIBRARY} ${COCOA_LIBRARY})
+    target_link_libraries(${binary} ${OSX_FRAMEWORKS})
+  endif()
+endfunction()
+
 
 # Do the linking for executables that are meant to link raylib
 function(link_libraries_to_executable executable)
   # Link the libraries
   if(APPLE)
-    # OS X, we use multiple frameworks
-    find_library(OPENGL_LIBRARY OpenGL)
-    find_library(OPENAL_LIBRARY OpenAL)
-    find_library(COCOA_LIBRARY Cocoa)
-    set(OSX_FRAMEWORKS ${OPENGL_LIBRARY} ${OPENAL_LIBRARY} ${COCOA_LIBRARY})
-    target_link_libraries(${executable} ${OSX_FRAMEWORKS})
+    # OS X, we use frameworks
+    link_os_x_frameworks(${executable})
   elseif(LINUX)
     # Elsewhere (such as Linux), need `-lopenal -lGL`, etc...
     target_link_libraries(${executable} m pthread dl)

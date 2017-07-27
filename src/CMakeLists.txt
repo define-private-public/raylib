@@ -1,14 +1,10 @@
-cmake_minimum_required(VERSION 3.0)
-
-# Detect linux
-if(UNIX AND NOT APPLE)
-  set(LINUX TRUE)
-endif()
-
 # Setup the project and settings
 project(raylib)
 set(raylib_VERSION_MAJOR 1)
 set(raylib_VERSION_MINOR 8)
+include("../utils.cmake")
+
+# Config options
 set(SHARED_RAYLIB OFF CACHE BOOL "Build raylib as a dynamic library")  
 
 # Need GLFW 3.2.1
@@ -24,28 +20,22 @@ if(${SHARED_RAYLIB})
   # Shared library
   add_library(raylib SHARED ${sources}) 
 
-  # On OS X for shared libs we need the -framework when doing .dylib stuff
-  if(APPLE)
-    find_library(OPENGL_LIBRARY OpenGL)
-    find_library(OPENAL_LIBRARY OpenAL)
-    find_library(COCOA_LIBRARY Cocoa)
-    set(OSX_FRAMEWORKS ${OPENGL_LIBRARY} ${OPENAL_LIBRARY} ${COCOA_LIBRARY})
-    target_link_libraries(raylib ${OSX_FRAMEWORKS})
-  endif()
+  # Will link -framework (if on OS X)
+  link_os_x_frameworks(raylib)
 else()
   # Static library
   add_library(raylib STATIC ${sources}) 
 
   if(LINUX)
-    # On Linux, need to link a few extra things
+    # On Linux, need to link a few extra things for static
     target_link_libraries(raylib m pthread dl)
-    target_link_libraries(raylib X11 Xrandr Xinerama Xi Xxf86vm Xcursor) #X11 stuff
+    target_link_libraries(raylib X11 Xrandr Xinerama Xi Xxf86vm Xcursor)  # X11 stuff
   endif()
 endif()
 
-# Some libraries are platform dependant
+# Always need to link OpenAL and OpenGL
 if(LINUX)
-  # Elsewhere (such as Linux), need`-lopenal -lGL`
+  # Elsewhere (such as Linux), need `-lopenal -lGL`
   target_link_libraries(raylib openal)
   target_link_libraries(raylib GL)
 endif()
