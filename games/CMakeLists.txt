@@ -24,5 +24,5 @@ foreach(game_source ${sources})
   link_libraries_to_executable(${game_name})
 endforeach()
 
-# TODO the games w/ subdirectories
-
+# Do the games with subdirectories
+add_subdirectory(just_do)
