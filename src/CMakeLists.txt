@@ -5,8 +5,17 @@ include("../utils.cmake")
 set(raylib_VERSION_MAJOR 1)
 set(raylib_VERSION_MINOR 8)
 
-# Config options
+
+### Config options
+# Build a static or shared raylib?
 set(SHARED_RAYLIB OFF CACHE BOOL "Build raylib as a dynamic library")  
+
+# OpenGL version
+# TODO have is set the proper flag
+set(GRAPHICS_API_OPENGL "3.3" CACHE STRING "OpenGL Version to build raylib with")
+set_property(CACHE GRAPHICS_API_OPENGL PROPERTY STRINGS "3.3" "2.1" "1.1" "ES 2.0")
+# TODO what about other platforms?
+
 
 # Get the sources together
 file(GLOB raylib_sources *.c)
@@ -14,6 +23,7 @@ file(GLOB stb_vorbis external/stb_vorbis.c)
 set(sources ${raylib_sources} ${stb_vorbis})
 
 # Build a static or shared raylib?
+# TODO clean this up a bit?
 if(${SHARED_RAYLIB})
   # Shared library
   add_library(raylib SHARED ${sources}) 
