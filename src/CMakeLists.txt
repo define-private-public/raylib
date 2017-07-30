@@ -6,7 +6,7 @@ set(raylib_VERSION_MAJOR 1)
 set(raylib_VERSION_MINOR 8)
 
 
-### Config options
+### Config options ###
 # Build a static or shared raylib?
 set(SHARED_RAYLIB OFF CACHE BOOL "Build raylib as a dynamic library")
 
@@ -17,8 +17,7 @@ set_property(CACHE PLATFORM PROPERTY STRINGS "Desktop" "Web" "Android" "Raspberr
 # OpenGL version
 set(OPENGL_VERSION "3.3" CACHE STRING "OpenGL Version to build raylib with")
 set_property(CACHE OPENGL_VERSION PROPERTY STRINGS "3.3" "2.1" "1.1" "ES 2.0")
-
-### Config options
+### Config options ###
 
 
 # Translate the config options to what raylib wants
@@ -81,6 +80,12 @@ endif()
 
 # Add in GLFW as a linking target
 target_link_libraries(raylib glfw)
+
+# Set the compile flags to raylib
+target_compile_definitions(raylib
+  PUBLIC ${PLATFORM}
+  PUBLIC ${GRAPHICS}
+)
 
 # Library file & Header
 set_target_properties(raylib PROPERTIES PUBLIC_HEADER "raylib.h")
