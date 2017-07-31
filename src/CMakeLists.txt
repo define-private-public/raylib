@@ -4,6 +4,7 @@ include("../utils.cmake")
 
 set(raylib_VERSION_MAJOR 1)
 set(raylib_VERSION_MINOR 8)
+set(RAYLIB raylib)    # Name of the generated library
 
 
 ### Config options ###
@@ -37,6 +38,14 @@ if(${PLATFORM} MATCHES "Desktop")
 elseif(${PLATFORM} MATCHES "Web")
   set(PLATFORM "PLATFORM_WEB")
   set(GRAPHICS "GRAPHICS_API_OPENGL_ES2")
+
+  # Need to use `emcc`
+  set(CMAKE_C_COMPILER "emcc")
+  set(CMAKE_CXX_COMPILER "em++")
+
+  # Change the name of the output library
+  set(RAYLIB "libraylib.bc")
+
 elseif(${PLATFORM} MATCHES "Android")
   set(PLATFORM "PLATFORM_ANDROID")
   set(GRAPHICS "GRAPHICS_API_OPENGL_ES2")
@@ -45,63 +54,69 @@ elseif(${PLATFORM} MATCHES "Raspberry Pi")
   set(GRAPHICS "GRAPHICS_API_OPENGL_ES2")
 endif()
 
-
-
 # Get the sources together
 file(GLOB raylib_sources *.c)
 file(GLOB stb_vorbis external/stb_vorbis.c)
 set(sources ${raylib_sources} ${stb_vorbis})
 
-# Build a static or shared raylib?
-# TODO clean this up a bit?
-if(${SHARED_RAYLIB})
-  # Shared library
-  add_library(raylib SHARED ${sources}) 
-
-  # Will link -framework (if on OS X)
-  link_os_x_frameworks(raylib)
-else()
-  # Static library
-  add_library(raylib STATIC ${sources}) 
-
-  if(LINUX)
-    # On Linux, need to link a few extra things for static
-    target_link_libraries(raylib m pthread dl)
-    target_link_libraries(raylib X11 Xrandr Xinerama Xi Xxf86vm Xcursor)  # X11 stuff
+# Which platform?
+if(${PLATFORM} MATCHES "PLATFORM_DESKTOP")
+  # Build a static or shared raylib?
+  # TODO clean this up a bit?
+  if(${SHARED_RAYLIB})
+    # Shared library
+    add_library(${RAYLIB} SHARED ${sources}) 
+  
+    # Will link -framework (if on OS X)
+    link_os_x_frameworks(raylib)
+  else()
+    # Static library
+    add_library(${RAYLIB} STATIC ${sources}) 
+  
+    if(LINUX)
+      # On Linux, need to link a few extra things for static
+      target_link_libraries(${RAYLIB} m pthread dl)
+      target_link_libraries(${RAYLIB} X11 Xrandr Xinerama Xi Xxf86vm Xcursor)  # X11 stuff
+    endif()
   endif()
+  
+  # Always need to link OpenAL and OpenGL
+  if(LINUX)
+    # Elsewhere (such as Linux), need `-lopenal -lGL`
+    target_link_libraries(${RAYLIB} openal)
+    target_link_libraries(${RAYLIB} GL)
+  endif()
+  
+  # Add in GLFW as a linking target
+  target_link_libraries(${RAYLIB} glfw)
+  
+  # Library file & Header
+  set_target_properties(${RAYLIB} PROPERTIES PUBLIC_HEADER "raylib.h")
+  install(
+    TARGETS ${RAYLIB}
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+    PUBLIC_HEADER DESTINATION include
+  )
+  
+  # Copy the header files to the build directory
+  file(COPY "raylib.h" DESTINATION ".")
+  file(COPY "rlgl.h" DESTINATION ".")
+  file(COPY "physac.h" DESTINATION ".")
+  file(COPY "raymath.h" DESTINATION ".")
+  file(COPY "audio.h" DESTINATION ".")
+elseif(${PLATFORM} MATCHES "PLATFORM_WEB")
+  # For the web.
+  add_executable(${RAYLIB} ${sources})
 endif()
 
-# Always need to link OpenAL and OpenGL
-if(LINUX)
-  # Elsewhere (such as Linux), need `-lopenal -lGL`
-  target_link_libraries(raylib openal)
-  target_link_libraries(raylib GL)
-endif()
-
-# Add in GLFW as a linking target
-target_link_libraries(raylib glfw)
 
 # Set the compile flags to raylib
-target_compile_definitions(raylib
+target_compile_definitions(${RAYLIB}
   PUBLIC ${PLATFORM}
   PUBLIC ${GRAPHICS}
 )
 
-# Library file & Header
-set_target_properties(raylib PROPERTIES PUBLIC_HEADER "raylib.h")
-install(
-  TARGETS raylib
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib
-  PUBLIC_HEADER DESTINATION include
-)
-
-# Copy the header files to the build directory
-file(COPY "raylib.h" DESTINATION ".")
-file(COPY "rlgl.h" DESTINATION ".")
-file(COPY "physac.h" DESTINATION ".")
-file(COPY "raymath.h" DESTINATION ".")
-file(COPY "audio.h" DESTINATION ".")
 
 
 # Print the flags for the user
