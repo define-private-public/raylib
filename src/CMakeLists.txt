@@ -35,6 +35,12 @@ if(${PLATFORM} MATCHES "Desktop")
   elseif (${OPENGL_VERSION} MATCHES "ES 2.0")
     set(GRAPHICS "GRAPHICS_API_OPENGL_ES2")
   endif()
+
+  # Need to force OpenGL 3.3 on OS X
+  # See: https://github.com/raysan5/raylib/issues/341
+  if(APPLE)
+    set(GRAPHICS "GRAPHICS_API_OPENGL_33")
+  endif()
 elseif(${PLATFORM} MATCHES "Web")
   set(PLATFORM "PLATFORM_WEB")
   set(GRAPHICS "GRAPHICS_API_OPENGL_ES2")
